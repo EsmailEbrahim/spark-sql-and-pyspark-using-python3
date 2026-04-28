@@ -4,6 +4,11 @@ services:
     hostname: itvdelab
     ports:
       - "8888:8888"
+      - "9879:9870"
+      - "4040:4040"
+      - "8078:8088"
+      - "18180:18080"
+      - "18181:18081"
     volumes:
       - "./itversity-material:/home/itversity/itversity-material"
       - "./data:/data"
@@ -23,6 +28,7 @@ services:
       - itvdelabnw
     environment:
       POSTGRES_PASSWORD: itversity
+
 networks:
   itvdelabnw:
     name: itvdelabnw
