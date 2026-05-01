@@ -3,8 +3,9 @@ services:
     image: itversity/itvdelab
     hostname: itvdelab
     ports:
-      - "8888:8888"
-      - "9879:9870"
+      - "8888:8888"   # Jupyter
+      - "9879:9870"   # NameNode
+      - "10000:10000" # Hive Server 2
       - "4040:4040"
       - "8078:8088"
       - "18180:18080"
@@ -18,6 +19,7 @@ services:
       - itvdelabnw
     depends_on:
       - "cluster_util_db"
+
   cluster_util_db:
     image: postgres:13
     ports:
@@ -29,6 +31,31 @@ services:
     environment:
       POSTGRES_PASSWORD: itversity
 
+  nifi:
+    image: apache/nifi:latest
+    container_name: nifi
+    ports:
+      - "8443:8443"
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=${NIFI_PASSWORD}
+      - NIFI_WEB_PROXY_HOST=${EXTERNAL_IP}:8443
+    networks:
+      - itvdelabnw
+    volumes:
+      - nifi_conf:/opt/nifi/nifi-current/conf
+      - nifi_database:/opt/nifi/nifi-current/database_repository
+      - nifi_flowfile:/opt/nifi/nifi-current/flowfile_repository
+      - nifi_content:/opt/nifi/nifi-current/content_repository
+      - nifi_provenance:/opt/nifi/nifi-current/provenance_repository
+
 networks:
   itvdelabnw:
     name: itvdelabnw
+
+volumes:
+  nifi_conf:
+  nifi_database:
+  nifi_flowfile:
+  nifi_content:
+  nifi_provenance:
