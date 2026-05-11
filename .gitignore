@@ -5,3 +5,5 @@
 .ipynb_checkpoints
 .DS_Store
 .env
+/lab_data/*
+!/lab_data/.gitkeep
